@@ -72,46 +72,44 @@ public class ReadTest {
 		Area.add(area3);
 		Area.add(area4);
 		Area.add(area5);
-		
+
 		sheetname.add(sheetname1);
 		sheetname.add(sheetname2);
 		sheetname.add(sheetname3);
 		sheetname.add(sheetname4);
 		sheetname.add(sheetname5);
-		
-	//0-5 6-11 12-17 18-23 24-
-		for (String[] areatest : Area){
+
+		// 0-5 6-11 12-17 18-23 24-
+		int temp = 0;
+		for (String[] areatest : Area) {
 			int mintest = 0;
 			int maxtest = 500;
 			int count = 0;
-			
-			if (maxtest<=5000){
-				
+
+			if (maxtest <= 5000) {
+
 				ArrayList<ArrayList<Object>> selectiondata = new ArrayList<ArrayList<Object>>();
-							
-	            for(String[] sheettest : sheetname){
-	            	for (String name:sheettest){
-	            		selectiondata =	AreaSelection(areatest,mintest,maxtest,"g://222.xls");
-	            		WriteNewsheet(selectiondata,name,"g://ceshi2.xls");	
-	            		
-	            		count++;
-	            		
-	            		if (count==1){
-	            			mintest = mintest+500;
-	            			maxtest = maxtest+500;
-	            		}else if (count ==2){
-	            			mintest = mintest+500;
-	            			maxtest = maxtest+1000;
-	            		}else if(count>2){
-	            			mintest = mintest+1000;
-	            			maxtest = maxtest+1000;
-	            		}
-	            	}
-	            	count=0;	       							            	
-	            }
-     			
-					
-				
+
+				for (String name : sheetname.get(temp)) {
+					selectiondata = AreaSelection(areatest, mintest, maxtest,
+							"g://excel1.xls");
+					WriteNewsheet(selectiondata, name, "g://ceshi3.xls");
+
+					count++;
+
+					if (count == 1) {
+						mintest = mintest + 500;
+						maxtest = maxtest + 500;
+					} else if (count == 2) {
+						mintest = mintest + 500;
+						maxtest = maxtest + 1000;
+					} else if (count > 2) {
+						mintest = mintest + 1000;
+						maxtest = maxtest + 1000;
+					}
+				}
+				temp++;
+
 			}
 			
 					
@@ -148,7 +146,7 @@ public class ReadTest {
 						double x = weightcell.getNumericCellValue();
 						if ((x > minweight) && (x < maxweight)) {
 							ArrayList<Object> list = new ArrayList<Object>(); 
-						    list = readbyrow(realrow);
+						    list = readbyrow(realrow,selectfilepath);
 							selectiondata.add(list);
 							int count = 0;
 							for (Object b : list) {
@@ -272,14 +270,14 @@ public class ReadTest {
 	
 	
 	//°指定一行
-		public ArrayList<Object> readbyrow(int rowlocal)
+		public ArrayList<Object> readbyrow(int rowlocal,String selectfilepath)
 		{
 			ArrayList<Object> a = new ArrayList<Object>();
 			
 			try {	
 				//2011
 				//根据绝对路径获得excel文件
-				InputStream in = new FileInputStream("g://222.xls");
+				InputStream in = new FileInputStream(selectfilepath);
 				//POIFSFileSystem fs = new POIFSFileSystem(new FileInputStream("g://hahah.xlsx"));
 				//得到excel对象
 				HSSFWorkbook hw = new HSSFWorkbook(in);
