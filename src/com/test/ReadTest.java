@@ -38,14 +38,18 @@ public class ReadTest {
 	int[] weight = {500,1000,2000,3000,4000,5000};
 	
 	//工作簿
-    String[] sheetname1 = {"一区0-500","一区500-1000","一区1000-2000","一区2000-3000","一区3000-4000","一区4000-5000"};
-    String[] sheetname2 = {"二区0-500","二区500-1000","二区1000-2000","二区2000-3000","二区3000-4000","二区4000-5000"};
-    String[] sheetname3 = {"三区0-500","三区500-1000","三区1000-2000","三区2000-3000","三区3000-4000","三区4000-5000"};
-    String[] sheetname4 = {"四区0-500","四区500-1000","四区1000-2000","四区2000-3000","四区3000-4000","四区4000-5000"};
-    String[] sheetname5 = {"五区0-500","五区500-1000","五区1000-2000","五区2000-3000","五区3000-4000","五区4000-5000"};
+    String[] sheetname1 = {"一区0-500","一区500-1000","一区1000-2000","一区2000-3000","一区3000-4000","一区4000-5000","一区5000-xxxx"};
+    String[] sheetname2 = {"二区0-500","二区500-1000","二区1000-2000","二区2000-3000","二区3000-4000","二区4000-5000","二区5000-xxxx"};
+    String[] sheetname3 = {"三区0-500","三区500-1000","三区1000-2000","三区2000-3000","三区3000-4000","三区4000-5000","三区5000-xxxx"};
+    String[] sheetname4 = {"四区0-500","四区500-1000","四区1000-2000","四区2000-3000","四区3000-4000","四区4000-5000","四区5000-xxxx"};
+    String[] sheetname5 = {"五区0-500","五区500-1000","五区1000-2000","五区2000-3000","五区3000-4000","五区4000-5000","五区5000-xxxx"};
     
     ArrayList<String[]> sheetname = new ArrayList<String[]>();
 	
+    static int sumcount = 0;
+    
+    
+    
 	public void testarea(){
 		Area.add(area1);
 		Area.add(area2);
@@ -60,12 +64,14 @@ public class ReadTest {
 		}
 	}
 	
-	public void test9(){
+	@Test
+	public void test9() throws IOException{
+		EMSTool("g://lmk.xls", "g://lmk.xls");
 		
 	}
 	
-	@Test
-	public void test2() throws IOException{
+	
+	public void EMSTool(String readfilepath,String writefilepath) throws IOException{
 		
 		Area.add(area1);
 		Area.add(area2);
@@ -86,15 +92,15 @@ public class ReadTest {
 			int maxtest = 500;
 			int count = 0;
 
-			if (maxtest <= 5000) {
+			if (maxtest <= 10000) {
 
 				ArrayList<ArrayList<Object>> selectiondata = new ArrayList<ArrayList<Object>>();
 
 				for (String name : sheetname.get(temp)) {
 					selectiondata = AreaSelection(areatest, mintest, maxtest,
-							"g://excel1.xls");
-					WriteNewsheet(selectiondata, name, "g://ceshi3.xls");
-
+							readfilepath);
+					WriteNewsheet(selectiondata, name, writefilepath);
+					
 					count++;
 
 					if (count == 1) {
@@ -106,6 +112,9 @@ public class ReadTest {
 					} else if (count > 2) {
 						mintest = mintest + 1000;
 						maxtest = maxtest + 1000;
+					} else if(count==6){
+						mintest = mintest + 1000;
+						maxtest = maxtest + 5000;
 					}
 				}
 				temp++;
@@ -144,10 +153,11 @@ public class ReadTest {
 				for (String a : area) {
 					if (areacell.getRichStringCellValue().getString().equals(a)) {
 						double x = weightcell.getNumericCellValue();
-						if ((x > minweight) && (x < maxweight)) {
+						if ((x > minweight) && (x <= maxweight)) {
 							ArrayList<Object> list = new ArrayList<Object>(); 
 						    list = readbyrow(realrow,selectfilepath);
 							selectiondata.add(list);
+							System.out.println("完成.."+a+"区"+minweight+"g 至 "+maxweight+"g的区域筛选");
 							int count = 0;
 							for (Object b : list) {
 								//System.out.print(b + "--");
@@ -257,6 +267,9 @@ public class ReadTest {
 			hssfRow.createCell(7).setCellValue((double) p.get(7));
 			hssfRow.createCell(8).setCellValue((double) p.get(8));
 			hssfRow.createCell(9).setCellValue(p.get(9).toString());
+			
+			sumcount++;
+			System.out.println("正在写入..第"+sumcount+"条.......完成进度"+(sumcount/4000)*100+"%");
 				
 			
 		}
